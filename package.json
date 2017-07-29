@@ -1,0 +1,48 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "https://github.com/alexgola/digital-utility-backend",
+  "author": "Gola Alex <Alex.Gola@nttdata.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "gulp",
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "jest": {
+    "transform": {
+      ".*": "<rootDir>/node_modules/babel-jest"
+    }
+  },
+  "dependencies": {
+    "babel-plugin-transform-flow-strip-types": "6.21.0",
+    "babel-polyfill": "6.20.0",
+    "babel-preset-latest": "6.16.0",
+    "body-parser": "^1.15.2",
+    "debug": "^2.4.5",
+    "express": "^4.14.0",
+    "gulp": "3.9.1",
+    "gulp-babel": "6.1.2",
+    "gulp-sourcemaps": "1.9.1",
+    "jshint-sourcemap-reporter": "0.0.1",
+    "mongoose": "^4.11.4",
+    "morgan": "1.7.0",
+    "oauth2-server": "^2.4.1",
+    "rx-node": "^1.0.2"
+  },
+  "devDependencies": {
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-preset-env": "^1.6.0",
+    "chai": "^4.1.0",
+    "gulp-clean": "^0.3.2",
+    "gulp-minify": "^1.0.0",
+    "gulp-notify": "^3.0.0",
+    "gulp-watch": "^4.3.11",
+    "jest": "18.0.0",
+    "run-sequence": "^2.1.0",
+    "sinon": "^2.4.1",
+    "sinon-chai": "^2.12.0",
+    "supertest": "2.0.1",
+    "supertest-as-promised": "4.0.2"
+  }
+}
