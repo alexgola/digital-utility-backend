@@ -1,36 +1,61 @@
-"use strict";
+// @flow
 
-function getAccessToken(bearerToken, callback) {
-  console.log("Auth method: getAccessToken");
-  callback(null, { date: null, user: { user_id: 12 } });
+const ClientRepository = require('../commons/repositories/client-repository')
+const UserRepository = require('../commons/repositories/user-repository')
+
+type AccessToken = {
+  date: any, 
+  user: mixed,
 }
 
-function getClient(clientId, clientSecret, callback) {
-  console.log("Auth method: getClient");
-  /*const options = {
-    where: {client_id: clientId},
-    attributes: ['id', 'client_id', 'redirect_uri', 'scope'],
-  };
-  if (clientSecret) options.where.client_secret = clientSecret;
-   return sqldb.OAuthClient
-    .findOne(options)
-    .then(function (client) {
-      if (!client) return new Error("client not found");
-      var clientWithGrants = client.toJSON()
-      clientWithGrants.grants = ['authorization_code', 'password', 'refresh_token', 'client_credentials']
-      // Todo: need to create another table for redirect URIs
-      clientWithGrants.redirectUris = [clientWithGrants.redirect_uri]
-      delete clientWithGrants.redirect_uri
-      //clientWithGrants.refreshTokenLifetime = integer optional
-      //clientWithGrants.accessTokenLifetime  = integer optional
-      return clientWithGrants
-    }).catch(function (err) {
-      console.log("getClient - Err: ", err)
-    });*/
+type ClientObj = {
+  id: string, 
+  redirectUris: ?string[], 
+  grants: string[], 
+  accessTokenLifetime: ?number, 
+  refreshTokenLifetime: ?number
 }
 
-function getUser(username, password, callback) {
-  console.log("Auth method: getUser");
+type UserObj = {
+  id: number|string
+}
+
+
+function getAccessToken(bearerToken: string, callback: (err:mixed, accessToken: AccessToken) => any) {
+  console.log("Auth method: getAccessToken"); 
+  callback(null, { date: null, user: { user_id: 12 }} )
+}
+
+async function getClient(clientId: string, clientSecret: ?string, callback: (err:mixed, client: ?ClientObj) => any)  {
+  let params : any = {
+    clientId: clientId
+  }
+ 
+  if (clientSecret) params.clientSecret = clientSecret;
+
+  const client = await ClientRepository.findByClientId(params.clientId)
+  if (client.clientSecret != clientSecret) callback(Error("ClientSecret doesn t match."), null)
+  if (client == null) callback(Error("Client not found"), null)
+
+  callback(false, {
+    id: client.clientId, 
+    redirectUris: client.redirectUris, 
+    grants: client.grants, 
+    accessTokenLifetime: null, 
+    refreshTokenLifetime: null
+  });
+}
+
+async function grantTypeAllowed (clientId:string, grantType:string, callback: (err:mixed, client: boolean) => any) {
+  const client = await ClientRepository.findByClientId(clientId)
+  const result = client.grants.indexOf(grantType) != -1
+  callback(false, result)
+}
+
+
+async function getUser(username:string, password: string, callback: (err:mixed, user: UserObj) => any) {
+  const user = await UserRepository.findByUsername(username)
+  console.log(user)
   /*return User
     .findOne({
       where: {username: username},
@@ -44,8 +69,8 @@ function getUser(username, password, callback) {
     });*/
 }
 
-function revokeRefreshToken(refreshToken, callback) {
-  console.log("Auth method: revokeRefreshToken");
+function revokeRefreshToken(refreshToken: any, callback: any) {
+  console.log("Auth method: revokeRefreshToken")
   /*
   return OAuthRefreshToken.findOne({
     where: {
@@ -68,7 +93,9 @@ function revokeRefreshToken(refreshToken, callback) {
   */
 }
 
-function saveAccessToken(accessToken, clientId, expires, user, callback) {
+
+function saveAccessToken(accessToken: string, clientId: string, expires: any, user:any, callback:any) {
+  console.log("Auth method: save access token"); 
   /*return Promise.all([
       OAuthAccessToken.create({
         access_token: token.accessToken,
@@ -84,7 +111,8 @@ function saveAccessToken(accessToken, clientId, expires, user, callback) {
         user_id: user.id,
         scope: token.scope
       }) : [],
-     ])
+
+    ])
     .then(function (resultsArray) {
       return _.assign(  // expected to return client and user, but not returning
         {
@@ -101,14 +129,18 @@ function saveAccessToken(accessToken, clientId, expires, user, callback) {
     });*/
 }
 
-function getUserFromClient(clientId, clientSecret, callback) {
+
+function getUserFromClient(clientId: string, clientSecret:string, callback: any) {
+  console.log("Auth method: getUserFromClient"); 
+
   /*var options = {
     where: {client_id: client.client_id},
     include: [User],
     attributes: ['id', 'client_id', 'redirect_uri'],
   };
   if (client.client_secret) options.where.client_secret = client.client_secret;
-   return OAuthClient
+
+  return OAuthClient
     .findOne(options)
     .then(function (client) {
       if (!client) return false;
@@ -119,14 +151,17 @@ function getUserFromClient(clientId, clientSecret, callback) {
     });*/
 }
 
-function getRefreshToken(refreshToken, callback) {
+function getRefreshToken(refreshToken: any, callback: any) {
+  console.log("Auth method: getRefreshToken"); 
   /*if (!refreshToken || refreshToken === 'undefined') return false
-   return OAuthRefreshToken
+
+  return OAuthRefreshToken
     .findOne({
       attributes: ['client_id', 'user_id', 'expires'],
       where: {refresh_token: refreshToken},
       include: [OAuthClient, User]
-     })
+
+    })
     .then(function (savedRT) {
       var tokenTemp = {
         user: savedRT ? savedRT.User.toJSON() : {},
@@ -137,7 +172,8 @@ function getRefreshToken(refreshToken, callback) {
         scope: savedRT.scope
       };
       return tokenTemp;
-     }).catch(function (err) {
+
+    }).catch(function (err) {
       console.log("getRefreshToken - Err: ", err)
     });*/
 }
@@ -152,5 +188,7 @@ module.exports = {
   getUser: getUser,
   getUserFromClient: getUserFromClient,
   revokeRefreshToken: revokeRefreshToken,
-  saveAccessToken: saveAccessToken
-};
+  saveAccessToken: saveAccessToken, 
+  grantTypeAllowed: grantTypeAllowed, 
+
+}

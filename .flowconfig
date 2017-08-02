@@ -1,18 +1,17 @@
 [ignore]
 .*/node_modules/.*
+.*/bower_components/.*
+
  
 [include]
 ./src
 
 [libs]
 flow/
+./src/interfaces
 
 [options]
-
 emoji=true
-
 module.system=haste
-
 experimental.strict_type_args=true
-
 munge_underscores=true

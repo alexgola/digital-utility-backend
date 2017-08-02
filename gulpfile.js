@@ -1,3 +1,4 @@
+require("babel-polyfill");
 const babel = require('gulp-babel');
 const gulp = require('gulp');
 const run = require('run-sequence');
@@ -18,7 +19,7 @@ reset();
 const paths = {
     js: ['src/**/*.js'],
     buildCode: ['build/**/*.js'],
-    devBuildCode: ['dev/**/*.js'],
+    devBuildCode: ['dev-build/**/*.js'],
 };
 
 gulp.task('clean-build-scripts', function () {
@@ -72,7 +73,7 @@ gulp.task('build-run', () => {
       node.kill();
     }
 
-    exec('node build/server.js', (err, stdout, stderr) => {
+    exec('node build/index.js', (err, stdout, stderr) => {
         let stdnout = `Standard Out: ${stdout}`;
         let stdnerr = `Errors: ${stderr}`;
         console.log(stdnout);
@@ -83,8 +84,8 @@ gulp.task('server', function() {
   if (node) {
     node.kill();
   }
-
-  node = spawn('node', ['dev-build/server.js'], {stdio: 'inherit'})
+  
+  node = spawn('node', ['dev-build/index.js'], {stdio: 'inherit'})
   node.on('close', function (code) {
     if (code === 8) {
       gulp.log('Error detected, waiting for changes...');
