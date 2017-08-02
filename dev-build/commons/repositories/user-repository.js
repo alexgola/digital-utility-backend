@@ -55,11 +55,18 @@ var findByUsername = function () {
 }();
 
 var create = function () {
-    var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
+    var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(user) {
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
                 switch (_context3.prev = _context3.next) {
                     case 0:
+                        _context3.next = 2;
+                        return new User(user).save();
+
+                    case 2:
+                        return _context3.abrupt('return', _context3.sent);
+
+                    case 3:
                     case 'end':
                         return _context3.stop();
                 }
@@ -67,7 +74,7 @@ var create = function () {
         }, _callee3, undefined);
     }));
 
-    return function create() {
+    return function create(_x2) {
         return _ref3.apply(this, arguments);
     };
 }();
