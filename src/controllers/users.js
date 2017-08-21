@@ -1,31 +1,26 @@
+// @flow
+
 const express = require('express')
-const crypto = require('crypto')
 const router = express.Router()
 
-// @flow
 const auth = require("../auth/index") 
-const logic = require("../commons/logics/user-logic")
+const UserLogic = require("../commons/logics/user-logic")
 
-router.post('/registration', function(req, res) {
+router.post('/registration', function(req: $Request, res:$Response) {
   const body : UserRegistrationRequest = req.body;  
-  logic.doUserRegistration(body).then(() => {
-             const secret = 'abcdefg';
-const hash = crypto.createHmac('sha256', secret)
-                   .update('I love cupcakes')
-                   .digest('hex');
-console.log(hash);
+  UserLogic.doUserRegistration(body).then(() => {
        res.send({
          result: true
-
        })
   })
 })
 
-router.get('/:id', auth.server.authorise(),function(req, res) {
-  const body : UserRegistrationRequest = req.body;
-  
-  console.log(body)
-  res.render('comments/comment', {comment: "asd"})
+
+router.get('/me', auth.server.authorise(), async function(req: $Request, res: $Response) {
+
+  const user = await UserLogic.getUserById(req.user.id)
+  res.json(user)
+
 })
 
 module.exports = router

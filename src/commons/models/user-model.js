@@ -1,3 +1,5 @@
+// @flow 
+
 var mongoose = require('mongoose')
  
 const User = mongoose.model('User', new mongoose.Schema({
@@ -7,6 +9,6 @@ const User = mongoose.model('User', new mongoose.Schema({
     salt: String, 
     email: String, 
     creationTimestamp: { type : Date, default: Date.now },
-}));
+}))
 
-module.exports = User; 
+module.exports = User

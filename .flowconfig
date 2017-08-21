@@ -9,6 +9,7 @@
 [libs]
 flow/
 ./src/models
+./flow-typed
 
 [options]
 emoji=true

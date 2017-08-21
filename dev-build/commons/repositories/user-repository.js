@@ -3,6 +3,7 @@
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var User = require('../models/user-model');
+var mongoose = require('mongoose');
 
 var find = function () {
     var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
@@ -29,14 +30,14 @@ var find = function () {
     };
 }();
 
-var findByUsername = function () {
-    var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(username) {
+var findSingle = function () {
+    var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(id) {
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
             while (1) {
                 switch (_context2.prev = _context2.next) {
                     case 0:
                         _context2.next = 2;
-                        return User.findOne({ username: username });
+                        return User.findOne({ _id: mongoose.Types.ObjectId(id) });
 
                     case 2:
                         return _context2.abrupt('return', _context2.sent);
@@ -49,19 +50,19 @@ var findByUsername = function () {
         }, _callee2, undefined);
     }));
 
-    return function findByUsername(_x) {
+    return function findSingle(_x) {
         return _ref2.apply(this, arguments);
     };
 }();
 
-var create = function () {
-    var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(user) {
+var findByUsername = function () {
+    var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(username) {
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
                 switch (_context3.prev = _context3.next) {
                     case 0:
                         _context3.next = 2;
-                        return new User(user).save();
+                        return User.findOne({ username: username });
 
                     case 2:
                         return _context3.abrupt('return', _context3.sent);
@@ -74,13 +75,39 @@ var create = function () {
         }, _callee3, undefined);
     }));
 
-    return function create(_x2) {
+    return function findByUsername(_x2) {
         return _ref3.apply(this, arguments);
+    };
+}();
+
+var create = function () {
+    var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(user) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+            while (1) {
+                switch (_context4.prev = _context4.next) {
+                    case 0:
+                        _context4.next = 2;
+                        return new User(user).save();
+
+                    case 2:
+                        return _context4.abrupt('return', _context4.sent);
+
+                    case 3:
+                    case 'end':
+                        return _context4.stop();
+                }
+            }
+        }, _callee4, undefined);
+    }));
+
+    return function create(_x3) {
+        return _ref4.apply(this, arguments);
     };
 }();
 
 module.exports = {
     findByUsername: findByUsername,
+    findSingle: findSingle,
     create: create,
     find: find
 };

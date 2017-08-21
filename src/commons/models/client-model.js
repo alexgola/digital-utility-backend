@@ -6,6 +6,6 @@ const Client = mongoose.model('Client', new mongoose.Schema({
     roles: [{ type : mongoose.Schema.ObjectId, ref: 'Role' }], 
     grants: [{ type: String }],
     redirectUris: [{ type: String }]
-}));
+}))
 
-module.exports = Client;
+module.exports = Client
